@@ -16,6 +16,6 @@ The project follows the OpenAPI standard and features a React.js frontend with a
 Here are some screenshots showcasing the application's frontend design.
 ![Dashboard](images/dashboard.PNG)
 ![Resume Create](images/resume_create.PNG)
-![Resume Delete](images/delete_resume.PNG)
+![Resume Delete](images/delete_resume.png)
 ![Application Create](images/application_create.PNG)
 ![Application Update](images/application_update.PNG)
