@@ -7,7 +7,7 @@ import UpdateApplication from "./UpdateApplication";
 
 export default function ActiveApplication(props: {
 	application: Application;
-	handleDeleteApplication: () => void;
+	handleDeleteApplication: () => Promise<void>;
 }) {
 	return (
 		<div className="w-full h-full border rounded-md overflow-hidden p-5">
@@ -21,7 +21,9 @@ export default function ActiveApplication(props: {
 						variant={"ghost"}
 						size={"icon"}
 						className="hover:text-red-400"
-						onClick={props.handleDeleteApplication}
+						onClick={async () => {
+							await props.handleDeleteApplication();
+						}}
 					>
 						<Trash2 />
 					</Button>
