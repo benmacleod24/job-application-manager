@@ -1,9 +1,9 @@
 import { Application } from "@/types";
 import { badgeVariants, Badge } from "../ui/badge";
-import { Delete, SquareArrowOutUpRight, Trash, Trash2 } from "lucide-react";
+import { SquareArrowOutUpRight, Trash2 } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
-import { deleteApplication } from "@/lib/helpers/applications";
+import UpdateApplication from "./UpdateApplication";
 
 export default function ActiveApplication(props: {
 	application: Application;
@@ -15,7 +15,8 @@ export default function ActiveApplication(props: {
 				<h1 className="font-semibold capitalize">
 					{props.application.name}
 				</h1>
-				<div>
+				<div className="space-x-1">
+					<UpdateApplication application={props.application} />
 					<Button
 						variant={"ghost"}
 						size={"icon"}

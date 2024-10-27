@@ -33,3 +33,23 @@ export async function createApplication(data: CreateUpdateApplicationDto) {
 
 	return false;
 }
+
+export async function updateApplication(
+	id: number,
+	data: CreateUpdateApplicationDto
+) {
+	const resp = await fetch(`https://localhost:7085/api/Applications/${id}`, {
+		method: "PUT",
+		headers: {
+			["Content-Type"]: "application/json",
+		},
+		body: JSON.stringify(data),
+	});
+
+	if (resp.ok) {
+		queryClient.invalidateQueries({ queryKey: ["applications"] });
+		return true;
+	}
+
+	return false;
+}
