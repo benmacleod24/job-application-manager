@@ -1,9 +1,7 @@
-﻿using JPTBackend.DTOs;
-using JPTBackend.Models;
+﻿using JPTBackend.DTOs.Request;
+using JPTBackend.DTOs.Response;
 using JPTBackend.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace JPTBackend.Controllers
 {
@@ -33,15 +31,14 @@ namespace JPTBackend.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<CreateResumeResponseDto>> CreateResume(CreateResumeDto request)
+        public async Task<ActionResult<ResumeResponseDto>> CreateResume(CreateResumeDto request)
         {
             ResumeResponseDto _resume = await _resumeService.CreateResume(request);
-
             return Created(String.Empty, _resume);
         }
 
         [HttpPatch("{id}")]
-        public async Task<ActionResult<CreateResumeResponseDto>> UpdateResume(int id, CreateResumeDto resume)
+        public async Task<ActionResult<ResumeResponseDto>> UpdateResume(int id, CreateResumeDto resume)
         {
             ResumeResponseDto _resume = await _resumeService.UpdateResume(id, resume);
             return Ok(_resume);

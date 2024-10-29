@@ -1,4 +1,5 @@
-﻿using JPTBackend.DTOs;
+﻿using JPTBackend.DTOs.Request;
+using JPTBackend.DTOs.Response;
 using JPTBackend.Models;
 
 namespace JPTBackend.Services

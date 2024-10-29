@@ -1,4 +1,4 @@
-﻿namespace JPTBackend.DTOs
+﻿namespace JPTBackend.DTOs.Request
 {
     public class CreateResumeDto
     {

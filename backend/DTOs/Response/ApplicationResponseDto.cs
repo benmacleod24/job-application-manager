@@ -1,7 +1,7 @@
 ﻿using JPTBackend.Models;
 using System.Text.Json.Serialization;
 
-namespace JPTBackend.DTOs
+namespace JPTBackend.DTOs.Response
 {
     public class ApplicationResponseDto
     {
@@ -9,6 +9,6 @@ namespace JPTBackend.DTOs
         public string Name { get; set; }
         public string Description { get; set; }
         public string JobUrl { get; set; }
-        public Resume Resume { get; set; }
+        public ResumeResponseDto Resume { get; set; }
     }
 }

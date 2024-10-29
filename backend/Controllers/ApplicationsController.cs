@@ -1,5 +1,7 @@
-﻿using JPTBackend.DTOs;
+﻿using JPTBackend.DTOs.Request;
+using JPTBackend.DTOs.Response;
 using JPTBackend.Models;
+using JPTBackend.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,119 +13,50 @@ namespace JPTBackend.Controllers
     [ApiController]
     public class ApplicationsController : ControllerBase
     {
-        private readonly DataContext _context;
-        public ApplicationsController(DataContext context)
+        private readonly IApplicationService _applicationService;
+        public ApplicationsController(IApplicationService applicationService)
         {
-            _context = context;
+            _applicationService = applicationService;
         }
 
         [HttpGet]
         public async Task<ActionResult<ApplicationResponseDto>> GetApplications()
         {
-            List<JobApplication> applications = await _context.JobApplications.Include(a => a.Resume).ThenInclude(r => r.Name).ToListAsync();
-            return Ok(applications.Select(x => new ApplicationResponseDto
-            {
-                Description = x.Description,
-                JobUrl = x.JobUrl,
-                Id = x.Id,
-                Name = x.Name,
-                Resume = x.Resume,
-            }));
+            List<ApplicationResponseDto> applications = await _applicationService.GetApplications();
+            return Ok(applications);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ApplicationResponseDto>> GetApplicationById(int id)
         {
-            JobApplication application = await _context.JobApplications.Include(a => a.Resume).FirstAsync(a => a.Id == id);
-            return Ok(new ApplicationResponseDto
-            {
-                Name = application.Name,
-                Id = application.Id,
-                JobUrl = application.JobUrl,
-                Description = application.Description,
-                Resume = application.Resume
-            });
+            ApplicationResponseDto application = await _applicationService.GetApplicationById(id);
+            return Ok(application);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<ApplicationResponseDto>> UpdateApplication(int id, CreateUpdateApplicationDto request)
         {
-            JobApplication application = await _context.JobApplications.FindAsync(id);
-
-            if (application == null)
-            {
-                return NotFound("Application not found.");
-            }
-
-            application.Name = request.Name;
-            application.ResumeId = request.ResumeId;
-            application.JobUrl = request.JobLink;
-            application.Description = request.Description;
-
-            // Attempt to save the changes.
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
-
-            return Ok(new ApplicationResponseDto
-            {
-                Name = application.Name,
-                JobUrl = application.JobUrl,
-                Description = application.Description,
-                Id = application.Id,
-            });
+            ApplicationResponseDto application = await _applicationService.UpdateApplication(id, request);
+            return Ok(application);
         }
 
         [HttpPost]
         public async Task<ActionResult<ApplicationResponseDto>> CreateApplication(CreateUpdateApplicationDto request)
         {
-            Resume resume = await _context.Resumes.FindAsync(request.ResumeId);
-
-            // The resume was not found.
-            if ( resume == null)
-            {
-                return NotFound("Resume not found.");
-            }
-
-            JobApplication application = new JobApplication
-            {
-                Name = request.Name,
-                Description = request.Description,
-                JobUrl = request.JobLink,
-                Resume = resume
-            };
-
-            _context.JobApplications.Add(application);
-            await _context.SaveChangesAsync();
-
-            return Ok(new ApplicationResponseDto
-            {
-                Description = request.Description,
-                JobUrl = request.JobLink,
-                Id = application.Id,
-                Name = application.Name,
-                Resume = application.Resume
-            });
+            ApplicationResponseDto application = await _applicationService.CreateApplication(request);
+            return Created(String.Empty, application);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteApplication(int id)
         {
-            JobApplication application = await _context.JobApplications.FindAsync(id);
+            bool isDeleted = await _applicationService.DeleteApplication(id);
 
             // Application not found.
-            if (application == null)
+            if (!isDeleted)
             {
                 return NotFound("Application not found.");
             }
-
-            _context.JobApplications.Remove(application);
-            await _context.SaveChangesAsync();
 
             return NoContent();
         }

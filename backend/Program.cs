@@ -34,6 +34,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddScoped<IResumeService, ResumeService>();
+builder.Services.AddScoped<IApplicationService, ApplicationService>();
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

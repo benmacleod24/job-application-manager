@@ -1,4 +1,5 @@
-﻿using JPTBackend.DTOs;
+﻿using JPTBackend.DTOs.Request;
+using JPTBackend.DTOs.Response;
 using JPTBackend.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -85,7 +86,6 @@ namespace JPTBackend.Services
             {
                 Id = resume.Id,
                 Name = resume.Name,
-                Applications = resume.Applications,
             };
         }
     }
