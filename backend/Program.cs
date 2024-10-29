@@ -1,21 +1,27 @@
 using JPTBackend.Models;
+using JPTBackend.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
-
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    // Ignore Cycles for Serialization.
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    });
 
-builder.Services.AddDbContext<DataContext>(options => options.UseMySql(builder.Configuration.GetConnectionString("DbConnection"), ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DbConnection"))));
+// Database Service.
+builder.Services.AddDbContext<DataContext>(options =>
+{
+    String connectionString = builder.Configuration.GetConnectionString("DbConnection");
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+});
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
+// Cors Service.
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Policy", policy =>
@@ -26,6 +32,13 @@ builder.Services.AddCors(options =>
         policy.AllowCredentials();
     });
 });
+
+builder.Services.AddScoped<IResumeService, ResumeService>();
+
+
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 

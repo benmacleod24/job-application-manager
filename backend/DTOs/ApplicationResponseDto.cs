@@ -9,6 +9,6 @@ namespace JPTBackend.DTOs
         public string Name { get; set; }
         public string Description { get; set; }
         public string JobUrl { get; set; }
-        public ResumeResponseDto Resume { get; set; }
+        public Resume Resume { get; set; }
     }
 }

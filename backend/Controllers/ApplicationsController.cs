@@ -20,18 +20,14 @@ namespace JPTBackend.Controllers
         [HttpGet]
         public async Task<ActionResult<ApplicationResponseDto>> GetApplications()
         {
-            List<JobApplication> applications = await _context.JobApplications.Include(a => a.Resume).ToListAsync();
+            List<JobApplication> applications = await _context.JobApplications.Include(a => a.Resume).ThenInclude(r => r.Name).ToListAsync();
             return Ok(applications.Select(x => new ApplicationResponseDto
             {
                 Description = x.Description,
                 JobUrl = x.JobUrl,
                 Id = x.Id,
                 Name = x.Name,
-                Resume = new ResumeResponseDto
-                {
-                    Name = x.Resume.Name,
-                    Id = x.Resume.Id,
-                }
+                Resume = x.Resume,
             }));
         }
 
@@ -45,11 +41,7 @@ namespace JPTBackend.Controllers
                 Id = application.Id,
                 JobUrl = application.JobUrl,
                 Description = application.Description,
-                Resume = new ResumeResponseDto
-                {
-                    Id = application.Resume.Id,
-                    Name = application.Resume.Name,
-                }
+                Resume = application.Resume
             });
         }
 
@@ -115,11 +107,7 @@ namespace JPTBackend.Controllers
                 JobUrl = request.JobLink,
                 Id = application.Id,
                 Name = application.Name,
-                Resume = new ResumeResponseDto
-                {
-                    Id = resume.Id,
-                    Name = resume.Name,
-                }
+                Resume = application.Resume
             });
         }
 
